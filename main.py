@@ -1,3 +1,5 @@
+# Задача 1
+
 import os
 import sys
 
@@ -6,7 +8,6 @@ import requests
 
 coords = input().split()
 zoom = input().split()
-print(zoom[0])
 
 map_request = f"http://static-maps.yandex.ru/1.x/" \
               f"?ll={float(coords[0])},{float(coords[1])}&spn={float(zoom[0])},{float(zoom[1])}&l=sat"
@@ -23,11 +24,20 @@ with open(map_file, "wb") as file:
     file.write(response.content)
 
 pygame.init()
-screen = pygame.display.set_mode((600, 450))
-screen.blit(pygame.image.load(map_file), (0, 0))
-pygame.display.flip()
-while pygame.event.wait().type != pygame.QUIT:
-    pass
-pygame.quit()
+screen = pygame.display.set_mode((1920, 1080))
+map = pygame.image.load(map_file)
+map = pygame.transform.scale(map, (1920, 1080))
 
-os.remove(map_file)
+while True:
+    screen.blit(map, (0, 0))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            os.remove(map_file)
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                os.remove(map_file)
+                sys.exit()
+
+    pygame.display.update()
